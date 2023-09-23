@@ -4,7 +4,7 @@ import "./Auth.css";
 
 const Auth = (): JSX.Element => {
 	return (
-		<main className="control">
+		<main className="auth">
 			<section>
 				<form>
 					<div className="control">
