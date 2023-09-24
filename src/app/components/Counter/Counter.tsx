@@ -1,15 +1,18 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AnyAction, Dispatch } from "redux";
-import { State } from "../../../shared/types";
-import { counterActions } from "../../store";
+import { AppDispatch, RootState } from "../../store";
+import { counterActions } from "../../store/counter";
 import "./Counter.css";
 
 const Counter = (): JSX.Element => {
-	const dispatch: Dispatch<AnyAction> = useDispatch();
-	const counter: number = useSelector((state: State) => state.counter);
-	const show: boolean = useSelector((state: State) => state.showCounter);
+	const dispatch: AppDispatch = useDispatch();
+	const counter: number = useSelector(
+		(state: RootState) => state.counter.counter
+	);
+	const show: boolean = useSelector(
+		(state: RootState) => state.counter.showCounter
+	);
 
 	const incrementHandler: () => void = () => {
 		dispatch(counterActions.increment());

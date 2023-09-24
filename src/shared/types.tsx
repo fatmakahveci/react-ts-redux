@@ -1,6 +1,10 @@
 "use client";
 
-export type State = {
+export type AuthState = {
+	isAuthenticated: boolean;
+};
+
+export type CounterState = {
 	counter: number;
 	showCounter: boolean;
 };

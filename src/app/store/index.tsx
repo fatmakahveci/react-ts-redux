@@ -1,42 +1,17 @@
 "use client";
 
-import {
-	AnyAction,
-	ThunkMiddleware,
-	configureStore,
-	createSlice,
-} from "@reduxjs/toolkit";
-import { INITIAL_STATE } from "../../shared/constants";
-import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
-import { State } from "../../shared/types";
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./auth";
+import counterReducer from "./counter";
 
-const counterSlice = createSlice({
-	name: "counter",
-	initialState: INITIAL_STATE,
-	reducers: {
-		increment(state) {
-			state.counter++;
-		},
-		decrement(state) {
-			state.counter--;
-		},
-		increase(state, action) {
-			state.counter += action.payload;
-		},
-		toggleCounter(state) {
-			state.showCounter = !state.showCounter;
-		},
+const store = configureStore({
+	reducer: {
+		counter: counterReducer,
+		auth: authReducer,
 	},
 });
 
-const store: ToolkitStore<
-	State,
-	AnyAction,
-	[ThunkMiddleware<State, AnyAction>]
-> = configureStore({
-	reducer: counterSlice.reducer,
-});
-
-export const counterActions: any = counterSlice.actions;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;
