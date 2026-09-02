@@ -1,5 +1,10 @@
 # Getting Started with Create React App
 
+[![React](https://img.shields.io/badge/React-TypeScript-149ECA?logo=react&logoColor=white)](https://react.dev/)
+[![Redux](https://img.shields.io/badge/State-Redux-764ABC?logo=redux&logoColor=white)](https://redux.js.org/)
+[![Last commit](https://img.shields.io/github/last-commit/fatmakahveci/react-ts-redux)](https://github.com/fatmakahveci/react-ts-redux/commits/main)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE.md)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
