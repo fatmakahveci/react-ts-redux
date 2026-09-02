@@ -1,51 +1,59 @@
-# Getting Started with Create React App
+# React Redux State Demo
 
 [![React](https://img.shields.io/badge/React-TypeScript-149ECA?logo=react&logoColor=white)](https://react.dev/)
 [![Redux](https://img.shields.io/badge/State-Redux-764ABC?logo=redux&logoColor=white)](https://redux.js.org/)
 [![Last commit](https://img.shields.io/github/last-commit/fatmakahveci/react-ts-redux)](https://github.com/fatmakahveci/react-ts-redux/commits/main)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE.md)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A compact Next.js and TypeScript project demonstrating centralized client state with Redux Toolkit and React Redux.
 
-## Available Scripts
+## Highlights
 
-In the project directory, you can run:
+- Redux Toolkit slices for authentication and counter state
+- Typed store access from React components
+- Provider-based integration with the Next.js client application
+- Small, focused components for authentication, profile, header, and counter flows
 
-### `npm start`
+## Technology
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Next.js
+- React
+- TypeScript
+- Redux Toolkit
+- React Redux
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js 20 or newer
+- npm
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm install
+npm run dev
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Open http://localhost:3000.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Quality Checks
 
-### `npm run eject`
+```bash
+npm run lint
+npm run build
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Repository Structure
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `src/app/store` — Redux store and feature slices
+- `src/app/components` — state-driven UI components
+- `src/shared` — shared constants and types
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Project Resources
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [Changelog](CHANGELOG.md)
+- [Contributing guide](.github/CONTRIBUTING.md)
+- [Security policy](.github/SECURITY.md)
+- [License](LICENSE.md)
