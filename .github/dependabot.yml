@@ -5,12 +5,24 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
+    # Keep Docker on the same Node major as .nvmrc and CI.
+    ignore:
+      - dependency-name: node
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # These major upgrades require a coordinated runtime/compiler migration.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eslint
+        update-types: ["version-update:semver-major"]
     groups:
       npm-patch-and-minor:
         update-types: [minor, patch]

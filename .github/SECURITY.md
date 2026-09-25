@@ -13,7 +13,8 @@ client-side state management. Its login form is a simulation:
   provide access control or protect server resources.
 - Reloading the page resets authentication and counter state.
 
-Use fictitious credentials when trying the demo. Applications built from this
+Prefer the credential-free demo button, or use fictitious credentials when
+trying the form. Applications built from this
 example must implement authentication and authorization on the server before
 using the interface to access protected data.
 
@@ -33,6 +34,9 @@ and [CSP form-action reference](https://developer.mozilla.org/en-US/docs/Web/HTT
 CI runs `npm run audit:security` against the lockfile, including development
 dependencies, and fails when a known vulnerability is reported. The container
 smoke test checks security headers on both successful and not-found responses.
+Chromium tests verify that no-JavaScript form submission is blocked and entered
+credentials do not appear in requests. Container validation uses a non-root
+user, a read-only root filesystem, dropped capabilities, and no new privileges.
 GitHub secret scanning with push protection, CodeQL scanning, and Dependabot
 security updates are enabled in the upstream repository; forks must configure
 these repository settings separately.

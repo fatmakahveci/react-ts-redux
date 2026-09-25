@@ -17,11 +17,14 @@ documentation improvements, tests, and well-scoped features are welcome.
 2. Follow the setup and development instructions in the repository README.
 3. Keep changes focused and consistent with the existing code style.
 4. Add or update tests and documentation when behavior changes.
-5. Run the available lint, type-check, test, and build commands before opening
-   a pull request.
+5. Run `npm run check` (lint, generated route types, TypeScript, Node tests,
+   production build, and dependency audit).
+6. Install Chromium with `npx playwright install --only-shell chromium` and run
+   `npm run test:e2e`. On Linux, add `--with-deps` to the installation command.
+   Browser tests start their own production server on port 3100.
 
-Use a short, descriptive branch name such as `fix/cart-total` or
-`feat/product-filter`. Write clear commit messages in the imperative mood and
+Use a short, descriptive branch name such as `fix/counter-overflow` or
+`feat/demo-controls`. Write clear commit messages in the imperative mood and
 avoid mixing unrelated changes in one commit.
 
 ## Pull Requests
@@ -40,3 +43,17 @@ Before requesting review, confirm that:
 Be responsive to review feedback. Maintainers may request changes or close a
 pull request that is out of scope, unsafe, or no longer aligned with the
 project.
+
+## Project Conventions
+
+Read the [architecture notes](../docs/architecture.md) before changing state
+ownership. Use the typed Redux hooks, keep form-only state local, and preserve
+the separation between authentication and counter slices. Never persist or
+transmit demo credentials. Cover keyboard focus and both color schemes for UI
+changes. Update the [demo GIF](../docs/assets/redux-state-demo.gif) when the main
+interaction flow changes.
+
+Routine dependency updates stay within the supported compiler, linter, and Node
+major versions. A major upgrade should update `.nvmrc`, Node types, Docker,
+compatibility notes, and tests together where relevant. Security alerts remain
+enabled; do not dismiss an advisory just because its fix requires a migration.

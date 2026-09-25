@@ -7,6 +7,9 @@ node_modules
 coverage
 docs
 tests
+test-results
+playwright-report
+playwright.config.ts
 out
 build
 .vercel

@@ -1,0 +1,32 @@
+name: Bug report
+description: Report unexpected behavior in the demo or its tooling.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "For security issues, use private vulnerability reporting instead. Never include real passwords, tokens, or personal data."
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include the page, actions, and fictitious inputs needed to reproduce the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, operating system, Node version, and commit or release.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or sanitized logs
+      description: Remove credentials and personal information before sharing.

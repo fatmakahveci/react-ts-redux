@@ -67,3 +67,29 @@ test("reducers ignore actions belonging to other features", () => {
   assert.equal(authReducer(auth, { type: "unknown/action" }), auth);
   assert.equal(counterReducer(counter, { type: "unknown/action" }), counter);
 });
+
+test("reset clears the counter while preserving hidden state", () => {
+  const previous = Object.freeze({ counter: -8, showCounter: false });
+  const next = counterReducer(previous, counterActions.reset());
+  assert.deepEqual(next, { counter: 0, showCounter: false });
+  assert.equal(previous.counter, -8);
+});
+
+for (const invalid of [NaN, Infinity, -Infinity, 1.5, Number.MAX_SAFE_INTEGER + 1, "10", null]) {
+  test(`the reducer rejects an invalid amount: ${String(invalid)}`, () => {
+    const previous = Object.freeze({ counter: 3, showCounter: true });
+    assert.equal(counterReducer(previous, counterActions.increase(invalid)), previous);
+  });
+}
+
+test("arithmetic stops at safe integer bounds and reset recovers", () => {
+  const upper = Object.freeze({ counter: Number.MAX_SAFE_INTEGER, showCounter: true });
+  const lower = Object.freeze({ counter: Number.MIN_SAFE_INTEGER, showCounter: false });
+  assert.equal(counterReducer(upper, counterActions.increment()), upper);
+  assert.equal(counterReducer(upper, counterActions.increase(10)), upper);
+  assert.equal(counterReducer(lower, counterActions.decrement()), lower);
+  assert.equal(counterReducer(lower, counterActions.increase(-10)), lower);
+  assert.equal(counterReducer(upper, counterActions.decrement()).counter, upper.counter - 1);
+  assert.equal(counterReducer(lower, counterActions.increment()).counter, lower.counter + 1);
+  assert.equal(counterReducer(upper, counterActions.reset()).counter, 0);
+});

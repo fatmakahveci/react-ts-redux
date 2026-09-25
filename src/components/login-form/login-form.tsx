@@ -16,16 +16,23 @@ export default function LoginForm() {
 
   return (
     <section className="panel login-form" aria-labelledby="login-title">
-      <h2 id="login-title">Demo login</h2>
-      <p>Demo only: use fictitious credentials. No account is verified.</p>
+      <h2 id="login-title" tabIndex={-1}>Demo login</h2>
+      <p id="login-help">Demo only: use fictitious credentials. No account is verified.</p>
+      <button type="button" className="try-demo" onClick={() => dispatch(authActions.login())}>
+        Try demo without credentials
+      </button>
+      <p className="help-text">Or try the form below.</p>
       {/* Unnamed inputs keep demo credentials out of native form submissions. */}
-      <form onSubmit={handleSubmit} autoComplete="off">
+      <form id="demo-login-form" aria-labelledby="login-title" aria-describedby="login-help" onSubmit={handleSubmit} autoComplete="off">
         <div className="control">
           <label htmlFor="email">Email</label>
           <input
             type="email"
             id="email"
             autoComplete="off"
+            aria-describedby="login-help"
+            autoCapitalize="none"
+            spellCheck={false}
             required
           />
         </div>
@@ -35,6 +42,7 @@ export default function LoginForm() {
             type="password"
             id="password"
             autoComplete="new-password"
+            aria-describedby="login-help"
             required
           />
         </div>

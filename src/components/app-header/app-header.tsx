@@ -11,9 +11,9 @@ export default function AppHeader() {
 
   return (
     <header className="app-header">
-      <h1>Redux Auth</h1>
+      <h1>Redux State Demo</h1>
       {isAuthenticated && (
-        <nav>
+        <nav aria-label="Demo session">
           <ul>
             <li>
               <Link href="/">Home</Link>

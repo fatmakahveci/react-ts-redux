@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability privately
+    url: https://github.com/fatmakahveci/react-ts-redux/security/advisories/new
+    about: Use private reporting for security issues; do not disclose them in public issues.
+  - name: Security policy and fallback contact
+    url: https://github.com/fatmakahveci/react-ts-redux/blob/main/.github/SECURITY.md
+    about: Read the policy if private reporting is unavailable.
