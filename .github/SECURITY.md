@@ -17,6 +17,31 @@ Use fictitious credentials when trying the demo. Applications built from this
 example must implement authentication and authorization on the server before
 using the interface to access protected data.
 
+## Built-in Protections
+
+The demo inputs are excluded from native form serialization, and the response
+policy blocks native form submissions even before JavaScript loads. The browser
+is asked not to autofill an existing password; use fictitious values regardless
+of your password manager's behavior.
+
+HTTP responses prohibit framing, embedded objects, and base URL changes, disable
+MIME sniffing, and suppress referrer information. The CSP is scoped to these
+controls; it does not impose a script allowlist or replace safe rendering and
+server-side authorization. See the [Next.js header documentation](https://nextjs.org/docs/app/api-reference/config/next-config-js/headers)
+and [CSP form-action reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/form-action).
+
+CI runs `npm run audit:security` against the lockfile, including development
+dependencies, and fails when a known vulnerability is reported. The container
+smoke test checks security headers on both successful and not-found responses.
+GitHub secret scanning with push protection, CodeQL scanning, and Dependabot
+security updates are enabled in the upstream repository; forks must configure
+these repository settings separately.
+
+Environment files and private key files are excluded from Git and Docker build
+contexts. Ignore rules do not remove previously committed secrets: revoke any
+exposed credential. Configure HTTPS and an appropriate HSTS policy at the
+production host; the local demo also supports HTTP for development.
+
 ## Supported Versions
 
 Security fixes target the latest code on `main`. Older releases, forks, and

@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
+      - name: Audit dependencies
+        run: npm run audit:security
+
       - name: Lint
         run: npm run lint
 
@@ -75,3 +78,4 @@ jobs:
             http://127.0.0.1:3000/ --output /tmp/redux-state-demo.html
           grep -q 'Redux State Demo' /tmp/redux-state-demo.html
           grep -q 'Demo login' /tmp/redux-state-demo.html
+          node scripts/check-security-headers.mjs http://127.0.0.1:3000

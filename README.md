@@ -64,6 +64,7 @@ Authentication is a client-side state demo: any non-empty password and valid ema
 npm test
 npm run lint
 npm run build
+npm run audit:security
 ```
 
 `npm test` runs the Node.js test suite. Reducer tests check state transitions,
@@ -74,7 +75,7 @@ store and React components, including form submission and button clicks in jsdom
 | --- | --- |
 | `tests/reducers.test.mjs` | Initial state, login/logout, counter arithmetic, visibility, immutable updates, and unrelated actions |
 | `tests/store.test.mjs` | Independent store instances and isolation between authentication and counter state |
-| `tests/state-rendering.test.mjs` | Server-rendered views, Redux provider integration, and skip-link destination |
+| `tests/state-rendering.test.mjs` | Server-rendered views, credential serialization protection, Redux provider integration, and skip-link destination |
 | `tests/user-interactions.test.mjs` | Invalid forms, submission, logout, accessible controls, counter actions, rerenders, and fresh mounts |
 
 Run a single suite with, for example, `node --test tests/reducers.test.mjs`.
@@ -82,12 +83,15 @@ DOM tests do not replace visual browser checks or verify Next.js navigation.
 
 ## CI/CD
 
-GitHub Actions runs lint, tests, a production build, and a Docker smoke test
+GitHub Actions runs dependency auditing, lint, tests, a production build, and a Docker smoke test
 for pull requests and pushes to `main`. Publishing a release runs the same
 checks before delivering the application image and source package to GHCR.
 
 See the [CI/CD guide](docs/ci-cd.md) for setup, image tags, local Docker usage,
 and rollback instructions.
+
+Security protections and reporting instructions are described in the
+[security policy](.github/SECURITY.md).
 
 ## Repository Structure
 
