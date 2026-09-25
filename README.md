@@ -84,8 +84,10 @@ DOM tests do not replace visual browser checks or verify Next.js navigation.
 ## CI/CD
 
 GitHub Actions runs dependency auditing, lint, tests, a production build, and a Docker smoke test
-for pull requests and pushes to `main`. Publishing a release runs the same
-checks before delivering the application image and source package to GHCR.
+for pull requests and pushes to `main`. Both CI jobs must pass before a pull
+request can merge. Successful CI on `main` automatically publishes a tested
+application image to GHCR with a full-commit tag. Releases also publish versioned
+images and source packages after validation.
 
 See the [CI/CD guide](docs/ci-cd.md) for setup, image tags, local Docker usage,
 and rollback instructions.
