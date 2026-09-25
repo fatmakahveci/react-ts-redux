@@ -1,26 +1,58 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    font-family: sans-serif;
-    color: #252525;
-    background-color: #252525;
+  margin: 0;
+  font-family: sans-serif;
+  color: #252525;
+  background-color: #252525;
 }
 
 button {
-    font: inherit;
-    cursor: pointer;
-    background-color: #3c0080;
-    border: 1px solid #3c0080;
-    color: white;
-    padding: 0.5rem 1.5rem;
-    border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+  background-color: #3c0080;
+  border: 1px solid #3c0080;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
 }
 
 button:hover,
 button:active {
-    background-color: #5b14ac;
-    border-color: #5b14ac;
+  background-color: #5b14ac;
+  border-color: #5b14ac;
+}
+
+:focus-visible {
+  outline: 3px solid #ffbb00;
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  /* Move the shortcut offscreen while keeping it reachable by keyboard. */
+  transform: translateY(-200%);
+  padding: 0.75rem 1rem;
+  background: white;
+  color: #3c0080;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.panel {
+  margin: 5rem auto;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+  /* Components can override the width while retaining space on narrow screens. */
+  width: min(var(--panel-width, 40rem), calc(100% - 2rem));
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  background-color: #f4f0fa;
 }

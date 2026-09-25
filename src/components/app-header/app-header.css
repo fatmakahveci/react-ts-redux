@@ -1,0 +1,52 @@
+.app-header {
+  width: 100%;
+  min-height: 5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3c0080;
+  color: white;
+  padding: 1rem 5%;
+}
+
+.app-header ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.app-header li {
+  margin: 0;
+}
+
+.app-header a {
+  text-decoration: none;
+  color: white;
+  font-size: 1.25rem;
+}
+
+.app-header a:hover,
+.app-header a:active {
+  color: #b864da;
+}
+
+.app-header button {
+  font-size: 1.25rem;
+  background-color: #ffbb00;
+  border: 1px solid #ffbb00;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  color: #2c2922;
+}
+
+.app-header button:hover,
+.app-header button:active {
+  background-color: #ffa600;
+  border-color: #ffa600;
+}
