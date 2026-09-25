@@ -23,18 +23,18 @@ const render = (store) => renderToStaticMarkup(
 test("login and logout switch the form, profile and navigation", () => {
   const store = makeStore();
   let html = render(store);
-  assert.match(html, /<form/);
+  assert.match(html, /id="demo-login-form"/);
   assert.doesNotMatch(html, /My User Profile|Logout/);
 
   store.dispatch(authActions.login());
   html = render(store);
-  assert.doesNotMatch(html, /<form/);
+  assert.doesNotMatch(html, /id="demo-login-form"/);
   assert.match(html, /My User Profile/);
   assert.match(html, /Logout/);
 
   store.dispatch(authActions.logout());
   html = render(store);
-  assert.match(html, /<form/);
+  assert.match(html, /id="demo-login-form"/);
   assert.doesNotMatch(html, /My User Profile|Logout/);
 });
 
@@ -56,7 +56,7 @@ test("counter actions update the displayed value and toggling preserves it", () 
 
 test("the page provides Redux state to its application", () => {
   const html = renderToStaticMarkup(React.createElement(HomePage));
-  assert.match(html, /<form/);
+  assert.match(html, /id="demo-login-form"/);
   assert.match(html, /<output[^>]*>0<\/output>/);
   assert.doesNotMatch(html, /My User Profile/);
 });
@@ -67,7 +67,7 @@ test("the unhydrated demo form never serializes entered credentials", () => {
     const document = dom.window.document;
     document.querySelector("#email").value = "demo@example.com";
     document.querySelector("#password").value = "fictitious-demo-password";
-    const form = document.querySelector("form");
+    const form = document.querySelector("#demo-login-form");
     assert.equal(form.checkValidity(), true);
     // Native form serialization also runs before React attaches its handlers.
     assert.deepEqual([...new dom.window.FormData(form)], []);
@@ -89,7 +89,7 @@ test("the skip link targets the single main landmark in the rendered page", () =
     assert.ok(skipLink);
     const target = document.getElementById(skipLink.hash.slice(1));
     assert.equal(target, document.querySelector("main"));
-    assert.ok(target.querySelector("form"));
+    assert.ok(target.querySelector("#demo-login-form"));
     assert.ok(target.querySelector("output"));
   } finally {
     dom.window.close();

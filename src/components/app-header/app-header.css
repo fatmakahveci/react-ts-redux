@@ -1,4 +1,5 @@
 .app-header {
+  --focus: #ffcf4a;
   width: 100%;
   min-height: 5rem;
   flex-wrap: wrap;
@@ -10,6 +11,8 @@
   color: white;
   padding: 1rem 5%;
 }
+
+.app-header h1 { margin: 0; font-size: clamp(1.35rem, 4vw, 1.8rem); }
 
 .app-header ul {
   display: flex;
@@ -26,6 +29,9 @@
 }
 
 .app-header a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   text-decoration: none;
   color: white;
   font-size: 1.25rem;
@@ -33,7 +39,7 @@
 
 .app-header a:hover,
 .app-header a:active {
-  color: #b864da;
+  color: #ffdf86;
 }
 
 .app-header button {

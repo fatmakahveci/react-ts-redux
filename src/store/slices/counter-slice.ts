@@ -10,19 +10,27 @@ const initialState: CounterState = {
   showCounter: true,
 };
 
+// Keep arithmetic exact; reject invalid payloads even when dispatched outside the UI.
+export function canAdjustCounter(value: number, amount: number) {
+  return Number.isSafeInteger(amount) && Number.isSafeInteger(value + amount);
+}
+
 const counterSlice = createSlice({
   name: "counter",
   initialState,
   // Redux Toolkit uses Immer, so draft mutations produce immutable updates.
   reducers: {
     increment(state) {
-      state.counter++;
+      if (canAdjustCounter(state.counter, 1)) state.counter++;
     },
     decrement(state) {
-      state.counter--;
+      if (canAdjustCounter(state.counter, -1)) state.counter--;
     },
     increase(state, action: PayloadAction<number>) {
-      state.counter += action.payload;
+      if (canAdjustCounter(state.counter, action.payload)) state.counter += action.payload;
+    },
+    reset(state) {
+      state.counter = 0;
     },
     toggleCounter(state) {
       state.showCounter = !state.showCounter;

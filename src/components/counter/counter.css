@@ -1,18 +1,21 @@
-.counter h2 {
-  text-transform: uppercase;
-  color: #575757;
-  margin: 0;
-  font-size: 1rem;
-}
-
-.counter button {
-  margin: 1rem;
-}
-
+.counter h2 { margin-top: 0; color: var(--muted); font-size: 1.2rem; }
 .counter .value {
   display: block;
-  font-size: 2rem;
-  color: #3c0080;
-  margin: 2rem 0;
-  font-weight: bold;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  color: var(--brand);
+  margin: 1.25rem 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.counter-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+.counter-adjustment { margin: 1.5rem 0; border-block: 1px solid var(--border); padding-block: 1.25rem; }
+.counter-adjustment label { font-weight: 600; }
+.counter-adjustment .help-text { margin: 0.4rem 0 0.8rem; }
+.amount-controls { display: flex; gap: 0.65rem; }
+.amount-controls input { flex: 1; width: 100%; }
+.amount-controls button { flex-shrink: 0; }
+@media (max-width: 24rem) {
+  .counter-actions { grid-template-columns: 1fr; }
+  .amount-controls { flex-direction: column; }
 }

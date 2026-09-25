@@ -78,13 +78,13 @@ const invalidCredentials = [
 
 for (const { name, email, password } of invalidCredentials) {
   test(`form validation blocks ${name} without changing login state`, () => {
-    const form = container.querySelector("form");
+    const form = container.querySelector("#demo-login-form");
     let submissions = 0;
     form.addEventListener("submit", () => submissions++);
     fillCredentials(email, password);
     click("Login");
     assert.equal(submissions, 0);
-    assert.equal(container.querySelector("form"), form);
+    assert.equal(container.querySelector("#demo-login-form"), form);
     assert.equal(container.querySelector("#profile-title"), null);
     assert.equal(container.querySelector("nav"), null);
     assert.equal(value(), "0");
@@ -93,13 +93,13 @@ for (const { name, email, password } of invalidCredentials) {
 
 test("login prevents form navigation; logout removes the profile and clears credentials", () => {
   let submission;
-  container.querySelector("form").addEventListener("submit", (event) => {
+  container.querySelector("#demo-login-form").addEventListener("submit", (event) => {
     submission = event;
   });
   login();
   assert.ok(submission);
   assert.equal(submission.defaultPrevented, true);
-  assert.equal(container.querySelector("form"), null);
+  assert.equal(container.querySelector("#demo-login-form"), null);
   assert.equal(container.querySelector("#profile-title").textContent, "My User Profile");
   assert.equal(container.querySelector("nav a").getAttribute("href"), "/");
 
@@ -112,9 +112,9 @@ test("login prevents form navigation; logout removes the profile and clears cred
 
 test("submitting the form directly logs in without a button click", () => {
   fillCredentials();
-  const form = container.querySelector("form");
+  const form = container.querySelector("#demo-login-form");
   act(() => form.requestSubmit());
-  assert.equal(container.querySelector("form"), null);
+  assert.equal(container.querySelector("#demo-login-form"), null);
   assert.ok(container.querySelector("#profile-title"));
   assert.ok(button("Logout"));
 });
@@ -181,8 +181,63 @@ test("a fresh application mount starts with a fresh login and counter state", ()
   act(() => root.unmount());
   root = createRoot(container);
   act(() => root.render(React.createElement(HomePage)));
-  assert.ok(container.querySelector("form"));
+  assert.ok(container.querySelector("#demo-login-form"));
   assert.equal(container.querySelector("#profile-title"), null);
   assert.equal(value(), "0");
   assert.equal(container.querySelector("#counter-value").hidden, false);
+});
+
+test("credential-free entry and logout focus the newly displayed heading", () => {
+  assert.notEqual(document.activeElement, container.querySelector("#login-title"));
+  click("Try demo without credentials");
+  assert.equal(document.activeElement, container.querySelector("#profile-title"));
+  click("Logout");
+  assert.equal(document.activeElement, container.querySelector("#login-title"));
+  assert.equal(container.querySelector("#email").value, "");
+});
+
+test("custom adjustments, native validation, and reset retain counter visibility", () => {
+  const amount = container.querySelector("#counter-amount");
+  for (const invalid of ["", "1.5"]) {
+    amount.value = invalid;
+    click("Apply amount");
+    assert.equal(value(), "0");
+  }
+  amount.value = "-4";
+  click("Apply amount");
+  assert.equal(value(), "-4");
+  click("Hide Counter");
+  click("Reset Counter");
+  assert.equal(value(), "0");
+  assert.equal(container.querySelector("#counter-value").hidden, true);
+  assert.equal(button("Reset Counter").disabled, true);
+});
+
+test("overflow announces an actionable error without corrupting the counter", () => {
+  const amount = container.querySelector("#counter-amount");
+  amount.value = String(Number.MAX_SAFE_INTEGER);
+  click("Apply amount");
+  assert.equal(button("Increment").disabled, true);
+  amount.value = "1";
+  click("Apply amount");
+  assert.equal(value(), String(Number.MAX_SAFE_INTEGER));
+  assert.equal(amount.getAttribute("aria-invalid"), "true");
+  assert.equal(document.activeElement, amount);
+  assert.match(container.querySelector("[role='alert']").textContent, /safe range/);
+  click("Reset Counter");
+  assert.equal(container.querySelector("[role='alert']").textContent, "");
+  assert.equal(button("Increment").disabled, false);
+});
+
+test("error recovery focuses its heading and invokes retry without showing error details", () => {
+  const ErrorPage = require("../src/app/error.tsx").default;
+  let retries = 0;
+  act(() => root.render(React.createElement(ErrorPage, {
+    retry: () => retries++,
+    error: new Error("private-error-detail"),
+  })));
+  assert.equal(document.activeElement, container.querySelector("h1"));
+  assert.doesNotMatch(container.textContent, /private-error-detail/);
+  click("Try again");
+  assert.equal(retries, 1);
 });

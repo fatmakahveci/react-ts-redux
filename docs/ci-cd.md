@@ -7,7 +7,7 @@ artifacts to GitHub Container Registry (GHCR).
 
 | Workflow | Trigger | Result |
 | --- | --- | --- |
-| [CI](../.github/workflows/ci.yml) | Pull requests into `main`, pushes to `main`, or a manual run | Clean installation, dependency audit, lint, tests, TypeScript/production build, Docker build, and an HTTP/security-header smoke test |
+| [CI](../.github/workflows/ci.yml) | Pull requests into `main`, pushes to `main`, or a manual run | Clean installation, dependency audit, lint, type checks, Node/Chromium tests, production build, and a restricted Docker smoke test |
 | [Publish application image](../.github/workflows/publish-container.yml) | Successful CI for a push to `main`, a published release, or a manual run | Builds and smoke-tests the validated commit's image, then publishes that exact image |
 | [Publish source package](../.github/workflows/publish-source-package.yml) | Published release or a manual run | Validates the selected commit, then publishes the source archive and checksum |
 
@@ -26,6 +26,9 @@ commit and registry digest. See GitHub's
 CI reads Node.js 22.23.3 from `.nvmrc`; Docker uses the same version. It runs
 `npm ci` with the committed lockfile and an npm download cache.
 The Next.js build also checks TypeScript.
+Quality checks run the browser suite against the standalone production server.
+CI installs Chromium and its Linux dependencies; failed runs retain the HTML
+report, screenshots, and traces for seven days as `browser-test-results`.
 `npm run audit:security` includes development dependencies and fails for known
 vulnerabilities at any severity. The container smoke test checks the homepage
 and the security headers on both successful and not-found responses.
@@ -72,6 +75,11 @@ when an exact, reproducible deployment or rollback reference is needed.
 
 The container runs the Next.js standalone server as the unprivileged `node`
 user and exposes port 3000. It includes a health check for the home page.
+The smoke test enforces a read-only root filesystem, a bounded temporary
+directory, no Linux capabilities, and no privilege escalation; it also checks
+that the process is not running as root. This static demo does not need a
+writable Next.js cache. Features such as image optimization or revalidation
+may require a dedicated writable cache volume when introduced.
 The image build follows Next.js
 [standalone output requirements](https://nextjs.org/docs/app/api-reference/config/next-config-js/output),
 including copying static files into the runtime image.
@@ -80,6 +88,8 @@ After an image has been published, run it on a Docker host:
 
 ```bash
 docker run --rm --name redux-state-demo \
+  --read-only --tmpfs /tmp:rw,nosuid,nodev,noexec,size=64m \
+  --cap-drop ALL --security-opt no-new-privileges \
   --publish 127.0.0.1:3000:3000 \
   ghcr.io/fatmakahveci/react-ts-redux/app:v1.0.0
 ```
@@ -96,10 +106,9 @@ steps; this repository does not configure a production host.
 
 ```bash
 npm ci
-npm run audit:security
-npm run lint
-npm test
-npm run build
+npm run check
+npx playwright install --with-deps --only-shell chromium
+npm run test:e2e
 docker build --tag redux-state-demo:local .
 bash scripts/smoke-test-container.sh redux-state-demo:local
 docker run --rm --publish 127.0.0.1:3000:3000 redux-state-demo:local
@@ -120,3 +129,6 @@ node scripts/check-security-headers.mjs http://localhost:3000
 Dependabot checks npm packages, GitHub Actions, and the Docker base image
 weekly. Actions are pinned to full commit SHAs and the base image is pinned
 to a digest; dependency changes are reviewed through pull requests.
+Routine major version updates for Node, Node types, TypeScript, and ESLint are
+excluded until a coordinated toolchain migration is ready. Patch/minor updates
+and security alerts remain part of maintenance.
