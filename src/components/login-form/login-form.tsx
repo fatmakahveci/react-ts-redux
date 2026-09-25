@@ -17,15 +17,15 @@ export default function LoginForm() {
   return (
     <section className="panel login-form" aria-labelledby="login-title">
       <h2 id="login-title">Demo login</h2>
-      <p>Demo only: use any email and password. No account is verified.</p>
-      <form onSubmit={handleSubmit}>
+      <p>Demo only: use fictitious credentials. No account is verified.</p>
+      {/* Unnamed inputs keep demo credentials out of native form submissions. */}
+      <form onSubmit={handleSubmit} autoComplete="off">
         <div className="control">
           <label htmlFor="email">Email</label>
           <input
             type="email"
             id="email"
-            name="email"
-            autoComplete="email"
+            autoComplete="off"
             required
           />
         </div>
@@ -34,8 +34,7 @@ export default function LoginForm() {
           <input
             type="password"
             id="password"
-            name="password"
-            autoComplete="current-password"
+            autoComplete="new-password"
             required
           />
         </div>

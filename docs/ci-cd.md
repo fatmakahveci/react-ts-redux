@@ -7,7 +7,7 @@ artifacts to GitHub Container Registry (GHCR).
 
 | Workflow | Trigger | Result |
 | --- | --- | --- |
-| [CI](../.github/workflows/ci.yml) | Pull requests into `main`, pushes to `main`, or a manual run | Clean installation, lint, tests, TypeScript/production build, Docker build, and an HTTP smoke test |
+| [CI](../.github/workflows/ci.yml) | Pull requests into `main`, pushes to `main`, or a manual run | Clean installation, dependency audit, lint, tests, TypeScript/production build, Docker build, and an HTTP/security-header smoke test |
 | [Publish application image](../.github/workflows/publish-container.yml) | Published release or a manual run | Validates the selected commit, then publishes a runnable application image |
 | [Publish source package](../.github/workflows/publish-source-package.yml) | Published release or a manual run | Validates the selected commit, then publishes the source archive and checksum |
 
@@ -16,6 +16,9 @@ jobs to pass. Pull requests run validation without registry write permissions.
 CI reads Node.js 22.23.3 from `.nvmrc`; Docker uses the same version. It runs
 `npm ci` with the committed lockfile and an npm download cache.
 The Next.js build also checks TypeScript.
+`npm run audit:security` includes development dependencies and fails for known
+vulnerabilities at any severity. The container smoke test checks the homepage
+and the security headers on both successful and not-found responses.
 
 ## Enable the Workflows
 
@@ -76,6 +79,7 @@ steps; this repository does not configure a production host.
 
 ```bash
 npm ci
+npm run audit:security
 npm run lint
 npm test
 npm run build
@@ -86,6 +90,12 @@ docker run --rm --publish 127.0.0.1:3000:3000 redux-state-demo:local
 Docker must be installed and its daemon running for the last two commands.
 Open `http://localhost:3000` to check the container. If installed, `actionlint`
 validates the workflow files without running or publishing them.
+
+With the server running, check its response headers separately:
+
+```bash
+node scripts/check-security-headers.mjs http://localhost:3000
+```
 
 Dependabot checks npm packages, GitHub Actions, and the Docker base image
 weekly. Actions are pinned to full commit SHAs and the base image is pinned

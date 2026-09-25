@@ -61,6 +61,21 @@ test("the page provides Redux state to its application", () => {
   assert.doesNotMatch(html, /My User Profile/);
 });
 
+test("the unhydrated demo form never serializes entered credentials", () => {
+  const dom = new JSDOM(render(makeStore()));
+  try {
+    const document = dom.window.document;
+    document.querySelector("#email").value = "demo@example.com";
+    document.querySelector("#password").value = "fictitious-demo-password";
+    const form = document.querySelector("form");
+    assert.equal(form.checkValidity(), true);
+    // Native form serialization also runs before React attaches its handlers.
+    assert.deepEqual([...new dom.window.FormData(form)], []);
+  } finally {
+    dom.window.close();
+  }
+});
+
 test("the skip link targets the single main landmark in the rendered page", () => {
   const html = renderToStaticMarkup(
     React.createElement(RootLayout, null, React.createElement(HomePage)),
