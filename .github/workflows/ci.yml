@@ -62,20 +62,13 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Set up Node.js for HTTP checks
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
       - name: Build production image
         run: docker build --tag redux-state-demo:ci .
 
       - name: Check that the container serves the application
-        shell: bash
-        run: |
-          set -euo pipefail
-          docker run --detach --name redux-state-demo-ci \
-            --publish 127.0.0.1:3000:3000 redux-state-demo:ci
-          trap 'docker logs redux-state-demo-ci; docker rm --force redux-state-demo-ci' EXIT
-          curl --fail --silent --show-error \
-            --retry 15 --retry-delay 1 --retry-all-errors \
-            --max-time 5 --retry-max-time 60 \
-            http://127.0.0.1:3000/ --output /tmp/redux-state-demo.html
-          grep -q 'Redux State Demo' /tmp/redux-state-demo.html
-          grep -q 'Demo login' /tmp/redux-state-demo.html
-          node scripts/check-security-headers.mjs http://127.0.0.1:3000
+        run: bash scripts/smoke-test-container.sh redux-state-demo:ci

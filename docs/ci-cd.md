@@ -8,11 +8,21 @@ artifacts to GitHub Container Registry (GHCR).
 | Workflow | Trigger | Result |
 | --- | --- | --- |
 | [CI](../.github/workflows/ci.yml) | Pull requests into `main`, pushes to `main`, or a manual run | Clean installation, dependency audit, lint, tests, TypeScript/production build, Docker build, and an HTTP/security-header smoke test |
-| [Publish application image](../.github/workflows/publish-container.yml) | Published release or a manual run | Validates the selected commit, then publishes a runnable application image |
+| [Publish application image](../.github/workflows/publish-container.yml) | Successful CI for a push to `main`, a published release, or a manual run | Builds and smoke-tests the validated commit's image, then publishes that exact image |
 | [Publish source package](../.github/workflows/publish-source-package.yml) | Published release or a manual run | Validates the selected commit, then publishes the source archive and checksum |
 
-Both publishing workflows call the same CI workflow and require all of its
-jobs to pass. Pull requests run validation without registry write permissions.
+Pull requests run validation without registry write permissions. After CI passes
+for a push to `main`, the application-image workflow checks out that CI run's
+exact commit, even if `main` has advanced. Failed or cancelled runs, pull request
+runs, and runs from another repository cannot trigger automatic publication.
+
+Release and manual publishing run the reusable CI workflow first. Automatic
+image publication uses the already successful CI result. Every image publication
+builds and loads the image locally, checks the application and security headers,
+then pushes the tested image without rebuilding. The job summary records the
+commit and registry digest. See GitHub's
+[workflow completion trigger documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_run).
+
 CI reads Node.js 22.23.3 from `.nvmrc`; Docker uses the same version. It runs
 `npm ci` with the committed lockfile and an npm download cache.
 The Next.js build also checks TypeScript.
@@ -20,15 +30,18 @@ The Next.js build also checks TypeScript.
 vulnerabilities at any severity. The container smoke test checks the homepage
 and the security headers on both successful and not-found responses.
 
-## Enable the Workflows
+## Repository Configuration
 
 1. Commit and push the workflow files, `package-lock.json`, `Dockerfile`,
    `.dockerignore`, `.nvmrc`, and `next.config.mjs` along with the application changes.
 2. Allow GitHub Actions and the referenced actions in the repository settings.
-3. Run **CI** from the Actions tab and confirm both **Quality checks** and
-   **Container smoke test** pass. Add these checks to the `main` branch rules
-   if merges should require successful validation.
-4. Publish a release whose tag contains these workflow files, or select
+3. Require **Quality checks** and **Container smoke test** from GitHub Actions
+   in the `main` branch rules, with branches required to be up to date before
+   merging. These checks are enforced in the upstream repository.
+4. Merge a passing pull request into `main`. Its push CI run automatically
+   starts **Publish application image** after both jobs pass.
+5. For a versioned image and source archive, publish a release whose tag contains
+   these workflow files. For a manual image delivery, select
    **Publish application image → Run workflow** for the desired ref.
 
 Publishing uses the automatically provided `GITHUB_TOKEN`; no extra registry
@@ -52,6 +65,10 @@ repository it is `ghcr.io/fatmakahveci/react-ts-redux/app`.
 Manual branch runs and prereleases do not update `latest`. Published images
 target `linux/amd64`. The existing source package keeps its separate
 `ghcr.io/<owner>/<repository>` location.
+
+Automatic `main` deliveries use only the full-commit `sha-...` tag; they do not
+move the stable release's `latest` tag. Prefer the digest from the job summary
+when an exact, reproducible deployment or rollback reference is needed.
 
 The container runs the Next.js standalone server as the unprivileged `node`
 user and exposes port 3000. It includes a health check for the home page.
@@ -84,10 +101,13 @@ npm run lint
 npm test
 npm run build
 docker build --tag redux-state-demo:local .
+bash scripts/smoke-test-container.sh redux-state-demo:local
 docker run --rm --publish 127.0.0.1:3000:3000 redux-state-demo:local
 ```
 
-Docker must be installed and its daemon running for the last two commands.
+Docker must be installed and its daemon running for the container commands.
+The smoke test uses a temporary container and cleans it up on success or failure.
+Pass a second argument, such as `3100`, if port 3000 is already in use.
 Open `http://localhost:3000` to check the container. If installed, `actionlint`
 validates the workflow files without running or publishing them.
 
